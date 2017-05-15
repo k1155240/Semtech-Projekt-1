@@ -2,6 +2,7 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 
 public class wikidataQuery {
 	
@@ -16,12 +17,13 @@ public class wikidataQuery {
 						"PREFIX wd: <http://www.wikidata.org/entity/>\n"+
 						"PREFIX wikibase: <http://wikiba.se/ontology#>\n"+
 						"PREFIX bd: <http://www.bigdata.com/rdf#>\n"+
-						"SELECT DISTINCT ?item ?itemLabel ?industry ?founders"+
+						"SELECT DISTINCT ?item ?itemLabel ?industryLabel ?hqlocLabel ?countryLabel\n"+
 						"WHERE"+
 						"{"+
-						  	"?item wdt:P31 wd:Q1058914 ."+
-						  	"?name wdt:P452 ?industry ."+
-						  	"?name wdt:P112 ?founders ."+
+						  	"?item wdt:P31 wd:Q1058914 ;"+
+						  	"wdt:P452 ?industry ;"+
+						  	"wdt:P159 ?hqloc ;"+
+						  	"wdt:P17 ?country ;"+
 						  	"SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\" }"+
 						"}"+
 						"LIMIT 10";
@@ -32,16 +34,19 @@ public class wikidataQuery {
 	    try {
 	        //result
 	        ResultSet results = queryEx.execSelect();
-	
+	        ResultSetFormatter.out(System.out, results) ;
 	        //output
 	        for(; results.hasNext();){
 	            //typecast results from set to qsolution
 	            QuerySolution answer = (QuerySolution)results.next();
+	            
+	            
 	
 	            System.out.println(answer.get("?item"));
 	            System.out.println(answer.get("?itemLabel"));
-	            System.out.println(answer.get("?industry"));
-	            System.out.println(answer.get("?founders"));
+	            System.out.println(answer.get("?industryLabel"));
+	            System.out.println(answer.get("?hqlocLabel"));
+	            System.out.println(answer.get("?country"));
 	            System.out.println("\n");
 	
 	        }
