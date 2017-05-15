@@ -15,7 +15,16 @@ public class wikidataQuery {
 						"PREFIX wdt: <http://www.wikidata.org/prop/direct/>\n"+
 						"PREFIX wd: <http://www.wikidata.org/entity/>\n"+
 						"PREFIX wikibase: <http://wikiba.se/ontology#>\n"+
-						"SELECT DISTINCT * WHERE {wd:Q2283 rdfs:label ?label. FILTER(langMatches(lang(?label), \"DE\"))}";                
+						"PREFIX bd: <http://www.bigdata.com/rdf#>\n"+
+						"SELECT DISTINCT ?item ?itemLabel ?industry ?founders"+
+						"WHERE"+
+						"{"+
+						  	"?item wdt:P31 wd:Q1058914 ."+
+						  	"?name wdt:P452 ?industry ."+
+						  	"?name wdt:P112 ?founders ."+
+						  	"SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\" }"+
+						"}"+
+						"LIMIT 10";
 	
 	    //query execution
 	    QueryExecution queryEx = QueryExecutionFactory.sparqlService(endpoint, query);
@@ -29,7 +38,11 @@ public class wikidataQuery {
 	            //typecast results from set to qsolution
 	            QuerySolution answer = (QuerySolution)results.next();
 	
-	            System.out.println(answer.get("?label"));       
+	            System.out.println(answer.get("?item"));
+	            System.out.println(answer.get("?itemLabel"));
+	            System.out.println(answer.get("?industry"));
+	            System.out.println(answer.get("?founders"));
+	            System.out.println("\n");
 	
 	        }
 	    } catch(Exception e){
