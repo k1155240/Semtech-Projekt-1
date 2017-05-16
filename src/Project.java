@@ -1,4 +1,4 @@
-package SemTech_MiniProject;
+
 
 import java.text.MessageFormat;
 import java.util.Scanner;
@@ -20,7 +20,8 @@ public class Project {
 	private static Dataset dataset;
 	public static void main(String[] args) {      
 		/* open (and create if not exists) a TDB database */
-		String directory = "C:/Users/wolfsst/workspace/Einheit2/src/SemTech_MiniProject/db"; //CHANGE TO A DIRECTORY ON YOUR FILE-SYSTEM
+		//C:/Users/wolfsst/workspace/Einheit2/src/SemTech_MiniProject/db
+		String directory = "F:/Dropbox/Studium/Master/2. Semester/Semantische Technologien/Mini Projekt 1/db"; //CHANGE TO A DIRECTORY ON YOUR FILE-SYSTEM
 		dataset = TDBFactory.createDataset(directory);
 
 		System.out.println("\n\n------------------------------");
@@ -296,7 +297,7 @@ public class Project {
 						"DELETE {" + 
 						":" + person + " :gender ?g. }" +
 						"INSERT {" +
-						":" + person + " :gender \""+ gender+"\"." +
+						":" + person + " :gender \""+ gender+"\"@en." +
 						"}"+
 						"WHERE {" +
 						":" + person + " :gender ?g." +
@@ -464,12 +465,12 @@ public class Project {
 						"PREFIX wikibase: <http://wikiba.se/ontology#>\n"+
 						"PREFIX bd: <http://www.bigdata.com/rdf#>\n"+
 						"PREFIX : <http://example.org/>\n"+
-						"SELECT ?n ?g ?a ?b ?e ?industryLabel\n" +
+						"SELECT ?n ?g ?a ?b ?e ?itemLabel ?industryLabel ?hqlocLabel ?countryLabel\n" +
 						"WHERE '{':{0} :name ?n; :gender ?g; :address ?a; :birthdate ?b; :employer ?e.\n" +
-						"SERVICE <http://query.wikidata.org/sparql> '{'SELECT DISTINCT ?industryLabel ?hqlocLabel ?countryLabel\n"+
+						"SERVICE <http://query.wikidata.org/sparql> '{'SELECT DISTINCT ?itemLabel ?industryLabel ?hqlocLabel ?countryLabel\n"+
 							"WHERE"+
 							"'{'"+
-							  	"wd:Q2283 wdt:P452 ?industry ;"+
+							  	"wd:Q312 wdt:P452 ?industry ;"+
 							  	"wdt:P159 ?hqloc ;"+
 							  	"wdt:P17 ?country ;"+
 							  	"SERVICE wikibase:label '{' bd:serviceParam wikibase:language \"en\" '}'\n"+
