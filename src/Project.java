@@ -1,5 +1,4 @@
 
-
 import java.text.MessageFormat;
 import java.util.Scanner;
 
@@ -20,7 +19,7 @@ public class Project {
 	private static Dataset dataset;
 	public static void main(String[] args) {      
 		/* open (and create if not exists) a TDB database */
-		//C:/Users/wolfsst/workspace/Einheit2/src/SemTech_MiniProject/db
+		//String directory = "C:/Users/wolfsst/workspace/Einheit2/src/SemTech_MiniProject/db";
 		String directory = "F:/Dropbox/Studium/Master/2. Semester/Semantische Technologien/Mini Projekt 1/db"; //CHANGE TO A DIRECTORY ON YOUR FILE-SYSTEM
 		dataset = TDBFactory.createDataset(directory);
 
@@ -29,9 +28,42 @@ public class Project {
 		System.out.println("Authors: Stefan | Max");
 		System.out.println("------------------------------");
 
+		FillCompanyGraph(); 
+		
 		boolean run = true;
 		while(run) {
 			run = doAction();
+		}
+	}
+
+	private static void FillCompanyGraph() {
+		dataset.begin(ReadWrite.WRITE); // START TRANSACTION
+		try {
+			dataset.getNamedModel("Companies").removeAll();
+			dataset.commit();
+		} finally { dataset.end(); } // END TRANSACTION (ABORT IF NO COMMIT)
+		
+		String insertQuery = 
+				"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+						"PREFIX : <http://example.org/>\n" +
+						"PREFIX wd: <http://www.wikidata.org/entity/>\n"+
+						"INSERT DATA { GRAPH :Companies {\n" + 
+						":microsoft :name \"Microsoft\"; :wikidata wd:Q2283.\n" +
+						":apple :name \"Apple\"; :wikidata wd:Q312.\n" +
+						":ibm :name \"IBM\"; :wikidata wd:Q37156.\n" +
+						":amazon :name \"Amazon\"; :wikidata wd:Q3884.\n" +
+						"}}";
+
+		UpdateRequest request = UpdateFactory.create(insertQuery);
+		dataset.begin(ReadWrite.WRITE); // START TRANSACTION
+		try {
+			UpdateAction.execute(request, dataset) ;
+			dataset.commit();
+		} catch (RuntimeException e) {
+			System.out.println(e.getMessage());
+			dataset.abort(); //
+		} finally { 
+			dataset.end(); // END TRANSACTION (ABORT IF NO COMMIT)
 		}
 	}
 
@@ -465,17 +497,18 @@ public class Project {
 						"PREFIX wikibase: <http://wikiba.se/ontology#>\n"+
 						"PREFIX bd: <http://www.bigdata.com/rdf#>\n"+
 						"PREFIX : <http://example.org/>\n"+
-						"SELECT ?n ?g ?a ?b ?e ?itemLabel ?industryLabel ?hqlocLabel ?countryLabel\n" +
+						"SELECT ?n ?g ?a ?b ?e ?w ?itemLabel ?industryLabel ?hqlocLabel ?countryLabel\n" +
 						"WHERE '{':{0} :name ?n; :gender ?g; :address ?a; :birthdate ?b; :employer ?e.\n" +
-						"SERVICE <http://query.wikidata.org/sparql> '{'SELECT DISTINCT ?itemLabel ?industryLabel ?hqlocLabel ?countryLabel\n"+
+						"OPTIONAL '{' GRAPH :Companies '{' ?c :name ?e; :wikidata ?w. '}' \n" +
+						"SERVICE <http://query.wikidata.org/sparql> '{'SELECT DISTINCT ?w ?itemLabel ?industryLabel ?hqlocLabel ?countryLabel\n"+
 							"WHERE"+
 							"'{'"+
-							  	"wd:Q312 wdt:P452 ?industry ;"+
+							  	"?w wdt:P452 ?industry ;"+
 							  	"wdt:P159 ?hqloc ;"+
 							  	"wdt:P17 ?country ;"+
 							  	"SERVICE wikibase:label '{' bd:serviceParam wikibase:language \"en\" '}'\n"+
 						  "'}' LIMIT 1"+
-						"'}}'", person);
+						"'}}}'", person);
 						
 						/*String queryStr =             
 				MessageFormat.format("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"+
