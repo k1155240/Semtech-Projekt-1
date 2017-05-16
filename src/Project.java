@@ -1,6 +1,3 @@
-package SemTech_MiniProject.src;
-
-
 import java.text.MessageFormat;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -22,8 +19,8 @@ public class Project {
 	private static Dataset dataset;
 	public static void main(String[] args) {      
 		/* open (and create if not exists) a TDB database */
-		String directory = "C:/Users/wolfsst/workspace/Einheit2/src/SemTech_MiniProject/db";
-		//String directory = "F:/Dropbox/Studium/Master/2. Semester/Semantische Technologien/Mini Projekt 1/db"; //CHANGE TO A DIRECTORY ON YOUR FILE-SYSTEM
+		//String directory = "C:/Users/wolfsst/workspace/Einheit2/src/SemTech_MiniProject/db";
+		String directory = "F:/Dropbox/Studium/Master/2. Semester/Semantische Technologien/Mini Projekt 1/db"; //CHANGE TO A DIRECTORY ON YOUR FILE-SYSTEM
 		dataset = TDBFactory.createDataset(directory);
 
 		System.out.println("\n\n------------------------------");
@@ -508,7 +505,7 @@ public class Project {
 						"SELECT (?n AS ?name) (?g AS ?gender) (?a as ?address) (?b as ?birthdate) (?e as ?employer) (?industryLabel as ?employerindustry) (?hqlocLabel as ?employerhq) (?countryLabel as ?emplyercountry)\n" +
 						"WHERE '{':{0} :name ?n; :gender ?g; :address ?a; :birthdate ?b; :employer ?e.\n" +
 						"OPTIONAL '{' GRAPH :Companies '{' ?c :name ?e; :wikidata ?w. '}' \n" +
-						"SERVICE <http://query.wikidata.org/sparql> '{'SELECT DISTINCT ?w ?itemLabel ?industryLabel ?hqlocLabel ?countryLabel\n"+
+						"SERVICE <http://query.wikidata.org/sparql> '{'SELECT DISTINCT ?w ?industryLabel ?hqlocLabel ?countryLabel\n"+
 							"WHERE"+
 							"'{'"+
 							  	"?w wdt:P452 ?industry ;"+
