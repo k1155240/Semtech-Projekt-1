@@ -1,5 +1,8 @@
+package SemTech_MiniProject.src;
+
 
 import java.text.MessageFormat;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import org.apache.jena.query.Dataset;
@@ -19,8 +22,8 @@ public class Project {
 	private static Dataset dataset;
 	public static void main(String[] args) {      
 		/* open (and create if not exists) a TDB database */
-		//String directory = "C:/Users/wolfsst/workspace/Einheit2/src/SemTech_MiniProject/db";
-		String directory = "F:/Dropbox/Studium/Master/2. Semester/Semantische Technologien/Mini Projekt 1/db"; //CHANGE TO A DIRECTORY ON YOUR FILE-SYSTEM
+		String directory = "C:/Users/wolfsst/workspace/Einheit2/src/SemTech_MiniProject/db";
+		//String directory = "F:/Dropbox/Studium/Master/2. Semester/Semantische Technologien/Mini Projekt 1/db"; //CHANGE TO A DIRECTORY ON YOUR FILE-SYSTEM
 		dataset = TDBFactory.createDataset(directory);
 
 		System.out.println("\n\n------------------------------");
@@ -32,7 +35,12 @@ public class Project {
 		
 		boolean run = true;
 		while(run) {
+			try {
 			run = doAction();
+			}
+			catch(InputMismatchException ex) {
+				System.out.println("Invalid input");
+			}
 		}
 	}
 
@@ -497,7 +505,7 @@ public class Project {
 						"PREFIX wikibase: <http://wikiba.se/ontology#>\n"+
 						"PREFIX bd: <http://www.bigdata.com/rdf#>\n"+
 						"PREFIX : <http://example.org/>\n"+
-						"SELECT ?n ?g ?a ?b ?e ?w ?itemLabel ?industryLabel ?hqlocLabel ?countryLabel\n" +
+						"SELECT (?n AS ?name) (?g AS ?gender) (?a as ?address) (?b as ?birthdate) (?e as ?employer) (?industryLabel as ?employerindustry) (?hqlocLabel as ?employerhq) (?countryLabel as ?emplyercountry)\n" +
 						"WHERE '{':{0} :name ?n; :gender ?g; :address ?a; :birthdate ?b; :employer ?e.\n" +
 						"OPTIONAL '{' GRAPH :Companies '{' ?c :name ?e; :wikidata ?w. '}' \n" +
 						"SERVICE <http://query.wikidata.org/sparql> '{'SELECT DISTINCT ?w ?itemLabel ?industryLabel ?hqlocLabel ?countryLabel\n"+
@@ -535,7 +543,7 @@ public class Project {
 		String queryStr =             
 				"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"+
 						"PREFIX : <http://example.org/>\n"+
-						"SELECT ?a ?n WHERE { ?a a :Person; :name ?n. }";
+						"SELECT (?a as ?personid) (?n as ?name) WHERE { ?a a :Person; :name ?n. }";
 
 		Query query = QueryFactory.create(queryStr);
 		dataset.begin(ReadWrite.READ); // START TRANSACTION
