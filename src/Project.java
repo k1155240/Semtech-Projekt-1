@@ -497,10 +497,10 @@ public class Project {
 						"PREFIX wikibase: <http://wikiba.se/ontology#>\n"+
 						"PREFIX bd: <http://www.bigdata.com/rdf#>\n"+
 						"PREFIX : <http://example.org/>\n"+
-						"SELECT ?n ?g ?a ?b ?e ?w ?itemLabel ?industryLabel ?hqlocLabel ?countryLabel\n" +
+						"SELECT ?n ?g ?a ?b ?e ?w ?industryLabel ?hqlocLabel ?countryLabel\n" +
 						"WHERE '{':{0} :name ?n; :gender ?g; :address ?a; :birthdate ?b; :employer ?e.\n" +
 						"OPTIONAL '{' GRAPH :Companies '{' ?c :name ?e; :wikidata ?w. '}' \n" +
-						"SERVICE <http://query.wikidata.org/sparql> '{'SELECT DISTINCT ?w ?itemLabel ?industryLabel ?hqlocLabel ?countryLabel\n"+
+						"SERVICE <http://query.wikidata.org/sparql> '{'SELECT DISTINCT ?w ?industryLabel ?hqlocLabel ?countryLabel\n"+
 							"WHERE"+
 							"'{'"+
 							  	"?w wdt:P452 ?industry ;"+
