@@ -424,7 +424,6 @@ public class Project {
 		String gender = sc.nextLine();
 		System.out.print("Employer: ");
 		String employer = sc.nextLine();
-		sc.close();
 		
 		String insertQuery = 
 				"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
@@ -456,17 +455,39 @@ public class Project {
 		System.out.print("Show person: ");
 		Scanner sc = new Scanner(System.in);
 		String person = sc.nextLine();
+		String endpoint = "http://query.wikidata.org/sparql";
 		
 		String queryStr =             
+				MessageFormat.format("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"+
+						"PREFIX wdt: <http://www.wikidata.org/prop/direct/>\n"+
+						"PREFIX wd: <http://www.wikidata.org/entity/>\n"+
+						"PREFIX wikibase: <http://wikiba.se/ontology#>\n"+
+						"PREFIX bd: <http://www.bigdata.com/rdf#>\n"+
+						"PREFIX : <http://example.org/>\n"+
+						"SELECT ?n ?g ?a ?b ?e ?industryLabel\n" +
+						"WHERE '{':{0} :name ?n; :gender ?g; :address ?a; :birthdate ?b; :employer ?e.\n" +
+						"SERVICE <http://query.wikidata.org/sparql> '{'SELECT DISTINCT ?industryLabel ?hqlocLabel ?countryLabel\n"+
+							"WHERE"+
+							"'{'"+
+							  	"wd:Q2283 wdt:P452 ?industry ;"+
+							  	"wdt:P159 ?hqloc ;"+
+							  	"wdt:P17 ?country ;"+
+							  	"SERVICE wikibase:label '{' bd:serviceParam wikibase:language \"en\" '}'\n"+
+						  "'}' LIMIT 1"+
+						"'}}'", person);
+						
+						/*String queryStr =             
 				MessageFormat.format("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"+
 						"PREFIX : <http://example.org/>\n"+
-						"SELECT ?n ?g ?a ?b ?e WHERE '{':{0} :name ?n; :gender ?g; :address ?a; :birthdate ?b; :employer ?e '}'", person);
+						"SELECT ?n ?g ?a ?b ?e WHERE '{':{0} :name ?n; :gender ?g; :address ?a; :birthdate ?b; :employer ?e '}'", person);*/
 
+
+		
 		Query query = QueryFactory.create(queryStr);
 		dataset.begin(ReadWrite.READ); // START TRANSACTION
 		try (QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
 			ResultSet results = qexec.execSelect() ;
-			ResultSetFormatter.out(System.out, results, query) ;
+			ResultSetFormatter.out(System.out, results) ;
 		} 
 		catch (RuntimeException e) {
 			System.out.println(e.getMessage());
@@ -506,7 +527,7 @@ public class Project {
 		dataset.begin(ReadWrite.READ); // START TRANSACTION
 		try (QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
 			ResultSet results = qexec.execSelect() ;
-			ResultSetFormatter.out(System.out, results, query) ;
+			ResultSetFormatter.out(System.out, results) ;
 		} 
 		catch (RuntimeException e) {
 			System.out.println(e.getMessage());
