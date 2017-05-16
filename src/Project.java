@@ -163,7 +163,7 @@ public class Project {
 				MessageFormat.format("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"+
 						"PREFIX : <http://example.org/>\n"+
 						"PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"+
-						"SELECT ?a WHERE '{' ?a a :Person; :address ?ad. FILTER contains(?ad,\"{0}\")'}'", address);
+						"SELECT ?personid WHERE '{' ?personid a :Person; :address ?ad. FILTER contains(?ad,\"{0}\")'}'", address);
 
 		Query query = QueryFactory.create(queryStr);
 		dataset.begin(ReadWrite.READ); // START TRANSACTION
@@ -205,7 +205,7 @@ public class Project {
 				MessageFormat.format("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"+
 						"PREFIX : <http://example.org/>\n"+
 						"PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"+
-						"SELECT * WHERE '{' ?a a :Person; :gender \"{0}\"@en '}'", gender);
+						"SELECT * WHERE '{' ?personid a :Person; :gender \"{0}\"@en '}'", gender);
 
 		Query query = QueryFactory.create(queryStr);
 		dataset.begin(ReadWrite.READ); // START TRANSACTION
@@ -502,7 +502,7 @@ public class Project {
 						"PREFIX wikibase: <http://wikiba.se/ontology#>\n"+
 						"PREFIX bd: <http://www.bigdata.com/rdf#>\n"+
 						"PREFIX : <http://example.org/>\n"+
-						"SELECT (?n AS ?name) (?g AS ?gender) (?a as ?address) (?b as ?birthdate) (?e as ?employer) (?industryLabel as ?employerindustry) (?hqlocLabel as ?employerhq) (?countryLabel as ?emplyercountry)\n" +
+						"SELECT (?n AS ?name) (?g AS ?gender) (?a as ?address) (?b as ?birthdate) (?e as ?employer) (?industryLabel as ?employerindustry) (?hqlocLabel as ?employerhq) (?countryLabel as ?employercountry)\n" +
 						"WHERE '{':{0} :name ?n; :gender ?g; :address ?a; :birthdate ?b; :employer ?e.\n" +
 						"OPTIONAL '{' GRAPH :Companies '{' ?c :name ?e; :wikidata ?w. '}' \n" +
 						"SERVICE <http://query.wikidata.org/sparql> '{'SELECT DISTINCT ?w ?industryLabel ?hqlocLabel ?countryLabel\n"+
@@ -560,7 +560,7 @@ public class Project {
 		String queryStr =             
 				"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"+
 						"PREFIX : <http://example.org/>\n"+
-						"SELECT * WHERE { GRAPH :deleted {?a a :Person} }";
+						"SELECT * WHERE { GRAPH :deleted {?personid a :Person} }";
 
 		Query query = QueryFactory.create(queryStr);
 		dataset.begin(ReadWrite.READ); // START TRANSACTION
